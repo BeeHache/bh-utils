@@ -35,6 +35,24 @@ public class ByteArrayListTest {
     @After
     public void tearDown() {
     }
+
+    @Test
+    public void fromByteArrayTest() {
+        ByteArrayList fromByteArray = ByteArrayList.fromByteArray(null);
+        assertNotNull(fromByteArray);
+        assertEquals(fromByteArray.size(), 0);        
+    }
+    
+    @Test
+    public void toByteArrayTest() {
+        ByteArrayList bal = new ByteArrayList();
+        byte[] a = bal.toByteArray();
+        assertNotNull(a);
+        //byte array always has a 4 byte header
+        assertEquals(a.length,4);
+    }
+    
+    
     
     @Test
     public void test() {

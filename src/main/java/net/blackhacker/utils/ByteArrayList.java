@@ -5,28 +5,19 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
  * @author ben
  */
 public class ByteArrayList extends ArrayList<byte[]> {
-    private static final int HEADER_ITEM_SIZE = Integer.SIZE / 8 * 2;
-    private static final Logger LOG = Logger.getLogger(ByteArrayList.class.getName());
-    
-    
     
     static public ByteArrayList fromByteArray(byte[] ba) {
         ByteArrayList l = new ByteArrayList();
-        DataInputStream dis=null;
         
-        try {
-        	dis = new DataInputStream(new ByteArrayInputStream(ba));
+        try (DataInputStream dis = new DataInputStream(new ByteArrayInputStream(ba))){
             
             int s = dis.readInt();
             for(int i=0 ; i < s; i++) {
@@ -36,53 +27,26 @@ public class ByteArrayList extends ArrayList<byte[]> {
                 l.add(b);
             }
 
-        } catch (IOException ex) {
-			// TODO Auto-generated catch block
-			ex.printStackTrace();
-			LOG.log(Level.SEVERE, "This should never happen ...", ex);
-			
-		} finally {
-            if (dis!=null) try {
-                dis.close();
-            } catch (IOException ex) {
-                LOG.log(Level.SEVERE, "... and neither should this ", ex);
-            }
+        } finally {
+            return l;
         }
-        
-        return l;
     }
     
     
     public byte[] toByteArray(){
-        
-        byte[] retval = null;
-        DataOutputStream dos = null;
-        ByteArrayOutputStream baos=null;
-        try { 
-            dos = new DataOutputStream(baos = new ByteArrayOutputStream());
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); DataOutputStream dos = new DataOutputStream(baos)){ 
             dos.writeInt(size());
             for(byte[] ba : this) {
                 dos.writeInt(ba.length);
                 dos.write(ba);
             }
 
-            retval = baos.toByteArray();
+            return baos.toByteArray();
 
-        } catch(IOException ex) { 
-        	
-        } finally {
-            try {
-                dos.close();
-            } catch (IOException ex) {
-                LOG.log(Level.SEVERE, null, ex);
-            }
-            try {
-                baos.close();
-            } catch (IOException ex) {
-                LOG.log(Level.SEVERE, null, ex);
-            }
+        } catch(IOException ex) {
+            //won't ever happen
+            return null;
         }
-        return retval;
     }
 
     @Override
