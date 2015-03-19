@@ -38,5 +38,9 @@
         </plugins>
     </build>
   
-  
+    <scm>
+      <connection>scm:git:git://github.com/BeeHache/bh-utils.git</connection>
+      <developerConnection>scm:git:git://github.com/BeeHache/bh-utils.git</developerConnection>
+      <url>https://github.com/BeeHache/bh-utils</url>
+  </scm>
 </project>
