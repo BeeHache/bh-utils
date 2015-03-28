@@ -14,7 +14,12 @@ import java.util.Arrays;
  */
 public class ByteArrayList extends ArrayList<byte[]> {
     
-    static public ByteArrayList fromByteArray(byte[] ba) {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 6049891423812206296L;
+
+	static public ByteArrayList fromByteArray(byte[] ba) {
         ByteArrayList l = new ByteArrayList();
         
         try (DataInputStream dis = new DataInputStream(new ByteArrayInputStream(ba))){
@@ -23,7 +28,10 @@ public class ByteArrayList extends ArrayList<byte[]> {
             for(int i=0 ; i < s; i++) {
                 int len = dis.readInt();
                 byte[] b = new byte[len];
-                dis.read(b);
+                int r = dis.read(b);
+                if (r < b.length) {
+                    b = Arrays.copyOf(b, r);
+                } 
                 l.add(b);
             }
 
@@ -45,7 +53,7 @@ public class ByteArrayList extends ArrayList<byte[]> {
 
         } catch(IOException ex) {
             //won't ever happen
-            return null;
+            return new byte[0];
         }
     }
 
